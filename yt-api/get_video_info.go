@@ -33,13 +33,14 @@ func (y *YtClient) GetVideoInfo(ctx context.Context, id string) (models.VideoInf
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return models.VideoInfo{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-	}
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return models.VideoInfo{}, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return models.VideoInfo{}, fmt.Errorf("invalid status code: %v,\n body: %s", resp.Status,
+			string(body))
 	}
 
 	var respBody struct {

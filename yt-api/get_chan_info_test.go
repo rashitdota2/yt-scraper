@@ -7,7 +7,7 @@ import (
 
 const testApiKey = "AIzaSyD--"
 
-const chanUsername = "PGL_DOTA2"
+const chanUsername = "alishevN"
 
 func TestGetChanInfo(t *testing.T) {
 	client := NewYtClient(testApiKey)

@@ -22,6 +22,7 @@ func (y *YtClient) GetPlaylistVideoIds(ctx context.Context, playlistId string) (
 	q.Add("playlistId", playlistId)
 	q.Add("maxResults", "10")
 	q.Add("fields", "items(contentDetails/videoId)")
+	q.Add("key", y.apiKey)
 	req.URL.RawQuery = q.Encode()
 
 	req.Header.Add("Accept", "application/json")
@@ -32,13 +33,14 @@ func (y *YtClient) GetPlaylistVideoIds(ctx context.Context, playlistId string) (
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-	}
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("invalid status code: %v,\n body: %s", resp.Status,
+			string(body))
 	}
 
 	var respBody struct {
